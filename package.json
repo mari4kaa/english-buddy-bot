@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@ai-sdk/google": "^2.0.14",
+    "@telegraf/session": "^2.0.0-beta.7",
     "ai": "^5.0.48",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",

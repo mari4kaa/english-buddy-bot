@@ -1,5 +1,5 @@
 import express from "express";
-import { Telegraf } from "telegraf";
+import { Telegraf, session } from "telegraf";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import dotenv from "dotenv";
@@ -31,6 +31,8 @@ async function callGemini(systemPrompt, userPrompt) {
     return "❌ Error connecting to Gemini API.";
   }
 }
+
+bot.use(session());
 
 // /start command
 bot.start((ctx) => {
@@ -86,42 +88,43 @@ Format with labels.`;
 });
 
 // Handle user text based on mode
-bot.on("text", async (ctx) => {
-  const mode = ctx.session.mode;
-  const text = ctx.message.text;
-
-  if (!mode) return;
-
-  if (mode === "vocab") {
-    ctx.reply("📝 Creating examples and a tip...");
-    const systemPrompt = `You are an English teacher. For a word or collocation, return:
-Definition:, 3 short Examples:, and a Tip:. Keep it concise.`;
-    const answer = await callGemini(systemPrompt, text);
-    ctx.reply(answer, {
-      reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
-    });
-    ctx.session.mode = null;
-  }
-
-  if (mode === "grammar") {
-    ctx.reply("🔎 Checking grammar...");
-    const systemPrompt = `You are a friendly English grammar corrector. For given text, return:
-1) Corrected text,
-2) 1–3 bullet explanations of corrections,
-3) One short tip.`;
-    const answer = await callGemini(systemPrompt, text);
-    ctx.reply(answer, {
-      reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
-    });
-    ctx.session.mode = null;
-  }
-});
+bot.on("message", async (ctx) => {
+    console.log('ON MESSAGE');
+    const mode = ctx.session.mode;
+    const text = ctx.message?.text;
+  
+    if (!mode || !text) return;
+  
+    if (mode === "vocab") {
+      ctx.reply("📝 Creating examples and a tip...");
+      const systemPrompt = `You are an English teacher. For a word or collocation, return:
+  Definition:, 3 short Examples:, and a Tip:. Keep it concise.`;
+      const answer = await callGemini(systemPrompt, text);
+      ctx.reply(answer, {
+        reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
+      });
+      ctx.session.mode = null;
+    }
+  
+    if (mode === "grammar") {
+      ctx.reply("🔎 Checking grammar...");
+      const systemPrompt = `You are a friendly English grammar corrector. For given text, return:
+  1) Corrected text,
+  2) 1-3 bullet explanations of corrections,
+  3) One short tip.`;
+      const answer = await callGemini(systemPrompt, text);
+      ctx.reply(answer, {
+        reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
+      });
+      ctx.session.mode = null;
+    }
+  });  
 
 // Webhook for production
 if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(bot.webhookCallback(`/bot${process.env.TELEGRAM_TOKEN}`));
-  const port = process.env.PORT || 3000;
+  const port = 5000;
   app.listen(port, () => console.log(`Bot running on port ${port}`));
 }
 
