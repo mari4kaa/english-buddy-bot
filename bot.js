@@ -1,4 +1,3 @@
-import express from "express";
 import { Telegraf, session } from "telegraf";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
@@ -39,6 +38,7 @@ bot.start((ctx) => {
   ctx.reply(
     "Hi! I'm your Language Learning Buddy 🤖.\nChoose an option from the menu:",
     {
+      parse_mode: "MarkdownV2",
       reply_markup: {
         keyboard: MAIN_MENU,
         resize_keyboard: true,
@@ -83,6 +83,7 @@ Format with labels.`;
   const answer = await callGemini(systemPrompt, userPrompt);
 
   ctx.reply(answer, {
+    parse_mode: "MarkdownV2",
     reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
   });
 });
@@ -101,6 +102,7 @@ bot.on("message", async (ctx) => {
   Definition:, 3 short Examples:, and a Tip:. Keep it concise.`;
       const answer = await callGemini(systemPrompt, text);
       ctx.reply(answer, {
+        parse_mode: "MarkdownV2",
         reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
       });
       ctx.session.mode = null;
@@ -114,21 +116,11 @@ bot.on("message", async (ctx) => {
   3) One short tip.`;
       const answer = await callGemini(systemPrompt, text);
       ctx.reply(answer, {
+        parse_mode: "MarkdownV2",
         reply_markup: { keyboard: MAIN_MENU, resize_keyboard: true },
       });
       ctx.session.mode = null;
     }
   });  
 
-// Webhook for production
-/*if (process.env.NODE_ENV === "production") {
-  const app = express();
-  app.use(bot.webhookCallback(`/bot${process.env.TELEGRAM_TOKEN}`));
-  const port = 8080;
-  app.listen(port, () => console.log(`Bot running on port ${port}`));
-}*/
-
-// Local polling
-//if (process.env.NODE_ENV !== "production") {
-  bot.launch().then(() => console.log("✅ Bot running in polling mode"));
-//}
+bot.launch().then(() => console.log("✅ Bot running in polling mode"));
