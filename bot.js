@@ -77,7 +77,7 @@ bot.hears(MENU.PHRASAL, async (ctx) => {
 1) One common phrasal verb + definition,
 2) Three example sentences in different contexts,
 3) One short memorization tip.
-Format with labels.`;
+Format with labels and in valid Telegram MarkdownV2`;
 
   const userPrompt = "Give me a phrasal verb, 3 usage examples, and a quick tip.";
   const answer = await callGemini(systemPrompt, userPrompt);
@@ -99,7 +99,7 @@ bot.on("message", async (ctx) => {
     if (mode === "vocab") {
       ctx.reply("📝 Creating examples and a tip...");
       const systemPrompt = `You are an English teacher. For a word or collocation, return:
-  Definition:, 3 short Examples:, and a Tip:. Keep it concise.`;
+  Definition:, 3 short Examples:, and a Tip:. Keep it concise. Format the answer in valid Telegram MarkdownV2`;
       const answer = await callGemini(systemPrompt, text);
       ctx.reply(answer, {
         parse_mode: "MarkdownV2",
@@ -113,7 +113,8 @@ bot.on("message", async (ctx) => {
       const systemPrompt = `You are a friendly English grammar corrector. For given text, return:
   1) Corrected text,
   2) 1-3 bullet explanations of corrections,
-  3) One short tip.`;
+  3) One short tip.
+  Format the answer in valid Telegram MarkdownV2`;
       const answer = await callGemini(systemPrompt, text);
       ctx.reply(answer, {
         parse_mode: "MarkdownV2",
