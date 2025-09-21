@@ -1,6 +1,7 @@
 {
   "name": "english-buddy-bot",
   "version": "1.0.0",
+  "type": "module",
   "description": "A simple Telegram bot which helps to learn English",
   "main": "bot.js",
   "scripts": {
@@ -10,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ai-sdk/google": "^2.0.14",
+    "ai": "^5.0.48",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "openai": "^5.22.0",
