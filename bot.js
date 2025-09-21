@@ -121,14 +121,14 @@ bot.on("message", async (ctx) => {
   });  
 
 // Webhook for production
-if (process.env.NODE_ENV === "production") {
+/*if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(bot.webhookCallback(`/bot${process.env.TELEGRAM_TOKEN}`));
   const port = 8080;
   app.listen(port, () => console.log(`Bot running on port ${port}`));
-}
+}*/
 
 // Local polling
-if (process.env.NODE_ENV !== "production") {
+//if (process.env.NODE_ENV !== "production") {
   bot.launch().then(() => console.log("✅ Bot running in polling mode"));
-}
+//}
