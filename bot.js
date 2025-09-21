@@ -124,7 +124,7 @@ bot.on("message", async (ctx) => {
 if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(bot.webhookCallback(`/bot${process.env.TELEGRAM_TOKEN}`));
-  const port = 5000;
+  const port = 8080;
   app.listen(port, () => console.log(`Bot running on port ${port}`));
 }
 
